@@ -18,7 +18,12 @@ export class SynthService {
   sequenzerStepPlaying: Subject<number> = new Subject<number>();
   sequenceStopped: Subject<void> = new Subject<void>();
 
-  private synth = new Tone.Synth().toDestination();
+  private synth = new Tone.Synth();
+  private synth2 = new Tone.Synth();
+
+  private reverb = new Tone.Reverb(5).toDestination();
+
+  private delay = new Tone.FeedbackDelay("8n", 0.5).toDestination();
 
   private _tempo: number = 120;
 
@@ -53,7 +58,10 @@ export class SynthService {
     {velocity: 1, pitch: 3, duration: '8n', armed: true},
   ]
 
-  constructor() { }
+  constructor() {
+    this.synth.connect(this.reverb);
+    this.synth2.connect(this.delay);
+  }
 
 
   set tempo(tempo: number) {
@@ -66,10 +74,13 @@ export class SynthService {
 
   play(){
     this.synth.triggerAttack(this.currentNote);
+    this.synth2.oscillator.type = 'square';
+    this.synth2.triggerAttack(this.currentNote);
   }
 
   stop(){
     this.synth.triggerRelease();
+    this.synth2.triggerRelease();
   }
 
   setOscillatorType(type:string){
@@ -97,12 +108,15 @@ export class SynthService {
     let index = 0;
     this.loop = new Tone.Loop(time => {
       const step = this.sequencerSteps[index];
-      this.sequenzerStepPlaying.next(index);
       if(step.armed) {
         const tone = Tone.Frequency(this.currentNote).transpose(step.pitch);
         this.synth.triggerAttackRelease(tone.toFrequency(), step.duration, time, step.velocity);
+        this.synth2.triggerAttackRelease(tone.toFrequency(), step.duration, time, step.velocity);
       }
-      index = (index + 1) % this.sequencerActiveStepsCount;
+      Tone.Draw.schedule(() => {
+        this.sequenzerStepPlaying.next(index);
+        index = (index + 1) % this.sequencerActiveStepsCount;
+      }, time);
     }, this.sequencerInterval).start(0);
     Tone.Transport.bpm.value = this.tempo;
     Tone.Transport.start();
