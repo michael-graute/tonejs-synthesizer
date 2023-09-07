@@ -37,16 +37,22 @@
           </div>
         </div>
         <div class="col-6">
-          <div>
-            <label class="form-label">Interval</label>
-            <select class="form-select" [(ngModel)]="synthService.sequencerInterval">
-              <option [ngValue]="'1n'">1n</option>
-              <option [ngValue]="'2n'">2n</option>
-              <option [ngValue]="'4n'">4n</option>
-              <option [ngValue]="'8n'">8n</option>
-              <option [ngValue]="'16n'">16n</option>
-              <option [ngValue]="'32n'">32n</option>
-            </select>
+          <div class="row">
+            <div class="col-6">
+              <label class="form-label">Interval</label>
+              <select class="form-select" [(ngModel)]="synthService.sequencerInterval">
+                <option [ngValue]="'1n'">1n</option>
+                <option [ngValue]="'2n'">2n</option>
+                <option [ngValue]="'4n'">4n</option>
+                <option [ngValue]="'8n'">8n</option>
+                <option [ngValue]="'16n'">16n</option>
+                <option [ngValue]="'32n'">32n</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label class="form-label">BPM</label>
+              <input type="text" class="form-control" [(ngModel)]="synthService.tempo">
+            </div>
           </div>
         </div>
       </div>
