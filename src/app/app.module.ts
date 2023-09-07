@@ -8,6 +8,7 @@ import { OscillatorComponent } from './oscillator/oscillator.component';
 import {FormsModule} from "@angular/forms";
 import { EnvelopeComponent } from './envelope/envelope.component';
 import { SequenzerComponent } from './sequenzer/sequenzer.component';
+import { MidiMonitorComponent } from './midi-monitor/midi-monitor.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { SequenzerComponent } from './sequenzer/sequenzer.component';
     KeyboardComponent,
     OscillatorComponent,
     EnvelopeComponent,
-    SequenzerComponent
+    SequenzerComponent,
+    MidiMonitorComponent
   ],
   imports: [
     BrowserModule,

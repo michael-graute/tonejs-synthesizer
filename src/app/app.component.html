@@ -1,7 +1,18 @@
 <div class="container">
+  <p *ngIf="!supported">
+    Web MIDI API is not supported by your browser
+  </p>
+  <div *ngIf="started; else button">
+    <ins-midi-monitor></ins-midi-monitor>
+    <ins-oscillator></ins-oscillator>
+    <ins-envelope></ins-envelope>
+    <ins-sequenzer></ins-sequenzer>
+    <ins-keyboard></ins-keyboard>
+  </div>
+  <ng-template #button>
+    <button class="btn btn-success" (click)="start()">
+      Start AudioContext
+    </button>
+  </ng-template>
   <router-outlet></router-outlet>
-  <ins-oscillator></ins-oscillator>
-  <ins-envelope></ins-envelope>
-  <ins-sequenzer></ins-sequenzer>
-  <ins-keyboard></ins-keyboard>
 </div>

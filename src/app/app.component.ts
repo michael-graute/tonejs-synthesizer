@@ -1,6 +1,5 @@
-import { Component } from '@angular/core';
-import * as Tone from 'tone';
-import {SynthService} from "./synth.service";
+import {Component, Inject} from '@angular/core';
+import {MIDI_SUPPORT} from '@ng-web-apis/midi';
 @Component({
   selector: 'ins-root',
   templateUrl: './app.component.html',
@@ -8,6 +7,11 @@ import {SynthService} from "./synth.service";
 })
 export class AppComponent {
 
+  started = false;
+  constructor(@Inject(MIDI_SUPPORT) readonly supported: boolean) {
+  }
 
-
+  start() {
+    this.started = true;
+  }
 }
