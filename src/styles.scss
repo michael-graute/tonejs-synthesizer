@@ -1,1 +1,94 @@
-/* You can add global styles to this file, and also import other style files */
+@import "bootstrap/scss/bootstrap";
+/*.body {
+  background-color: #323232;
+  color: #8e9aa0;
+}*/
+
+.element {
+  border: 1px solid #8e9aa0;
+  border-radius: 5px;
+  padding: 15px;
+  background: #252627;
+}
+
+.keyboard {
+  justify-content: center;
+}
+
+.keyboard, .keys {
+  display: flex;
+  position: relative;
+}
+
+.octave-label {
+  position: absolute;
+  bottom: -25px;
+  z-index: 10;
+  margin: 0 0 10px 5px;
+  font-size: small;
+  color: #8b979d;
+}
+
+.note {
+  background-color: #323232;
+  color: #8e9aa0;
+  border: 1px solid #8e9aa0;
+  border-right: 0;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  height: 200px;
+  width: 50px;
+
+  &.playing {
+    background-color: #607d8b;
+  }
+
+  &.sharp {
+    border: 1px solid #8e9aa0;
+    background-color: #1a1a1a;
+    height: 120px;
+    margin: 0 -20px 0 -20px;
+    width: 40px;
+    z-index: 100;
+
+    &.playing {
+      background-color: #2c383f;
+    }
+  }
+
+  &.last {
+    border-right: 1px solid #8e9aa0;
+    margin-right: 4px;
+  }
+}
+
+.sequenzer {
+
+  display: flex;
+
+  .step {
+    width: 80px;
+    height: auto;
+
+    &.disabled {
+      opacity: 0.3;
+    }
+
+    .step-toggle {
+      background-color: #1a1a1a;
+      color: #8e9aa0;
+      border: 1px solid #8e9aa0;
+      height: 30px;
+
+      &.playing {
+        border-color: #5ca462;
+        border-top-width: 3px;
+        //height: 20px;
+      }
+
+      &.armed {
+        background-color: #607d8b;
+      }
+    }
+  }
+}

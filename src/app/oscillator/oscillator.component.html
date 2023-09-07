@@ -1,0 +1,9 @@
+<div class="element">
+  <h3>Oscillator</h3>
+  <div class="oscillator">
+    <label>Wave Form</label>
+    <select class="form-select" [(ngModel)]="selectedWaveForm" (change)="setWaveForm()">
+      <option *ngFor="let waveForm of availableWaveForms " [ngValue]="waveForm">{{waveForm}}</option>
+    </select>
+  </div>
+</div>

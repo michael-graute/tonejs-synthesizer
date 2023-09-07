@@ -1,0 +1,79 @@
+<div class="row">
+  <div class="col-12">
+    <div class="element">
+      <h3>Sequenzer</h3>
+      <div class="form-check">
+        <label class="form-check-label">Enable Sequenzer for Keyboard</label>
+        <input type="checkbox" class="form-check-input" [(ngModel)]="synthService.sequencerEnabled">
+      </div>
+      <div class="row mb-3" *ngIf="!synthService.sequencerEnabled">
+        <div class="col-6">
+          <select class="form-select" [(ngModel)]="synthService.currentNote">
+            <option [ngValue]="'C1'">C1</option>
+            <option [ngValue]="'C2'">C2</option>
+            <option [ngValue]="'C3'">C3</option>
+            <option [ngValue]="'C4'">C4</option>
+            <option [ngValue]="'C5'">C5</option>
+            <option [ngValue]="'C6'">C6</option>
+          </select>
+        </div>
+        <div class="col-3">
+          <button class="btn btn-success" (click)="play()" [disabled]="isPlaying">Play Sequence</button>
+        </div>
+        <div class="col-3">
+          <button class="btn btn-danger" (click)="stop()">Stop Sequence</button>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-6">
+          <label class="form-label">Active Steps</label>
+          <div class="row">
+            <div class="col-10">
+              <input class="form-range" data-orientation="vertical" type="range" min="1" max="16" step="1" [(ngModel)]="synthService.sequencerActiveStepsCount">
+            </div>
+            <div class="col-2">
+              <input type="text" class="form-control" [(ngModel)]="synthService.sequencerActiveStepsCount">
+            </div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div>
+            <label class="form-label">Interval</label>
+            <select class="form-select" [(ngModel)]="synthService.sequencerInterval">
+              <option [ngValue]="'1n'">1n</option>
+              <option [ngValue]="'2n'">2n</option>
+              <option [ngValue]="'4n'">4n</option>
+              <option [ngValue]="'8n'">8n</option>
+              <option [ngValue]="'16n'">16n</option>
+              <option [ngValue]="'32n'">32n</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="sequenzer">
+        <div class="step" *ngFor="let step of synthService.sequencerSteps; let i = index" [ngClass]="{disabled: i+1 > synthService.sequencerActiveStepsCount}">
+          <div class="step-toggle" [ngClass]="{'playing': step.playing === true, 'armed': step.armed}" (click)="toggleArmed(i)">&nbsp;</div>
+          <div>
+            <input class="form-range" data-orientation="vertical" type="range" min="0" max="1" step="0.1" [(ngModel)]="step.velocity">
+            <p class="text-sm-center">{{step.velocity}}</p>
+          </div>
+          <div>
+            <input class="form-range" data-orientation="vertical" type="range" min="-12" max="12" step="1" [(ngModel)]="step.pitch">
+            <p class="text-sm-center">{{step.pitch}}</p>
+          </div>
+          <div>
+            <select class="form-select" [(ngModel)]="step.duration">
+              <option [ngValue]="'1n'">1n</option>
+              <option [ngValue]="'2n'">2n</option>
+              <option [ngValue]="'4n'">4n</option>
+              <option [ngValue]="'8n'">8n</option>
+              <option [ngValue]="'16n'">16n</option>
+              <option [ngValue]="'32n'">32n</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
