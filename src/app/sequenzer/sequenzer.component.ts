@@ -18,7 +18,6 @@ export class SequenzerComponent {
   ngOnInit() {
     this.stepCount = this.synthService.sequencerSteps.length;
     this.synthService.sequenzerStepPlaying.subscribe((stepIndex: number) => {
-      console.log(stepIndex);
       this.isPlaying = true;
       let step: Step = this.synthService.sequencerSteps[stepIndex];
       step.playing= true;
