@@ -2,6 +2,7 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {MIDI_MESSAGES} from "@ng-web-apis/midi";
 import {Observable} from "rxjs";
 import {map} from 'rxjs/operators';
+import * as Tone from "tone";
 
 @Component({
   selector: 'ins-midi-monitor',
@@ -21,6 +22,12 @@ export class MidiMonitorComponent implements OnInit{
   ngOnInit(): void {
     this.notes$.subscribe((note: [number, number, number]): void => {
       console.log(note);
+      if(note[0] === 144 && note[2] > 0) { // note on
+        console.log('Note On', Tone.Frequency(note[1], "midi").toNote());
+        console.log('Velocity', (1/127) * note[2]);
+      } else if(note[0] === 144 && note[2] === 0) { // note off
+        console.log('Note Off');
+      }
     });
   }
 }
