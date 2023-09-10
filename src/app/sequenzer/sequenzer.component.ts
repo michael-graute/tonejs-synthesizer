@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {Step, SynthService} from "../synth.service";
 
 @Component({
@@ -6,59 +6,53 @@ import {Step, SynthService} from "../synth.service";
   templateUrl: './sequenzer.component.html',
   styleUrls: ['./sequenzer.component.scss']
 })
-export class SequenzerComponent {
+export class SequenzerComponent implements OnInit {
 
   stepCount: number = 0;
+  rootNotes: string[] = [];
 
   constructor(public synthService: SynthService, private changeDetectorRef: ChangeDetectorRef) {
+    for(let i=0; i<6; i++) {
+      ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'B', 'B#'].forEach((note: string) => {
+        this.rootNotes.push(note + i);
+      });
+    }
   }
 
   isPlaying: boolean = false;
 
+  stepPlaying: number = 0;
+
   ngOnInit() {
-    this.stepCount = this.synthService.sequencerSteps.length;
     this.synthService.sequenzerStepPlaying.subscribe((stepIndex: number) => {
-      this.isPlaying = true;
-      let step: Step = this.synthService.sequencerSteps[stepIndex];
-      step.playing= true;
-      let previousStep: Step = this.synthService.sequencerSteps[0];
-      if(stepIndex > 0){
-        previousStep = this.synthService.sequencerSteps[stepIndex-1];
-      } else if (stepIndex == 0) {
-        previousStep = this.synthService.sequencerSteps[this.synthService.sequencerActiveStepsCount-1];
-      }
-      previousStep.playing = false;
+      this.stepPlaying = stepIndex;
       this.changeDetectorRef.detectChanges();
     });
-    this.synthService.sequenceStopped.subscribe(() => {
+
+    this,this.synthService.sequenzerStarted.subscribe(() => {
+      this.isPlaying = true;
+      this.stepPlaying = 0;
+    });
+
+    this.synthService.sequenzerStopped.subscribe(() => {
       this.isPlaying = false;
-      this.synthService.sequencerSteps.forEach((step: Step) => {
-        step.playing = false;
-      });
-      this.changeDetectorRef.detectChanges();
+      this.stepPlaying = 0;
     });
   }
 
   play() {
-    this.synthService.currentNote = 'C4';
+    this.isPlaying = true;
     this.synthService.playSequence();
   }
 
   stop() {
+    this.isPlaying = false;
+    this.stepPlaying = 0;
+    this.changeDetectorRef.detectChanges();
     this.synthService.stopSequence();
   }
 
   toggleArmed(stepIndex: number) {
     this.synthService.sequencerSteps[stepIndex].armed = !this.synthService.sequencerSteps[stepIndex].armed;
-  }
-
-  setStepCount() {
-    if (this.stepCount > this.synthService.sequencerSteps.length) {
-      for (let i = this.synthService.sequencerSteps.length; i < this.stepCount; i++) {
-        this.synthService.sequencerSteps.push({velocity: 1, pitch: 0, duration: '8n', armed: true});
-      }
-    } else if (this.stepCount < this.synthService.sequencerSteps.length) {
-      this.synthService.sequencerSteps.splice(this.stepCount, this.synthService.sequencerSteps.length - this.stepCount);
-    }
   }
 }
