@@ -1,11 +1,13 @@
 <div class="container">
+  <input type="range" min="0" max="100" step="1" insKnob>
   <p *ngIf="!supported">
     Web MIDI API is not supported by your browser
   </p>
   <div *ngIf="started; else button">
     <ins-midi-monitor></ins-midi-monitor>
-    <ins-oscillator></ins-oscillator>
-    <ins-envelope></ins-envelope>
+    <div class="row mb-3">
+      <ins-oscillator class="col" *ngFor="let synth of oscillators; let i = index" [name]="'Oscillator ' + (i + 1)" [synth]="synth"></ins-oscillator>
+    </div>
     <ins-sequenzer></ins-sequenzer>
     <ins-keyboard></ins-keyboard>
   </div>

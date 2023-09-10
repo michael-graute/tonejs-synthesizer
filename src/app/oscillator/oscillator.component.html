@@ -1,9 +1,10 @@
 <div class="element">
-  <h3>Oscillator</h3>
-  <div class="oscillator">
+  <h3>{{name}}</h3>
+  <div class="oscillator mb-3">
     <label>Wave Form</label>
-    <select class="form-select" [(ngModel)]="selectedWaveForm" (change)="setWaveForm()">
+    <select class="form-select" [(ngModel)]="synth.oscillator.type">
       <option *ngFor="let waveForm of availableWaveForms " [ngValue]="waveForm">{{waveForm}}</option>
     </select>
   </div>
+  <ins-envelope [synth]="synth"></ins-envelope>
 </div>

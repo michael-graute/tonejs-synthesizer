@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {SynthService} from "../synth.service";
+import * as Tone from "tone";
+import {OmniOscillatorType} from "tone/build/esm/source/oscillator/OscillatorInterface";
 
 @Component({
   selector: 'ins-oscillator',
@@ -8,13 +10,11 @@ import {SynthService} from "../synth.service";
 })
 export class OscillatorComponent {
 
-  availableWaveForms = ['sine', 'square', 'sawtooth', 'triangle']
-  selectedWaveForm: string = 'triangle';
+  @Input() synth: Tone.Synth = new Tone.Synth();
+  @Input() name: string = 'Oscillator'
 
-  constructor(private synthService: SynthService) {
-  }
+  availableWaveForms:OmniOscillatorType[] = ['sine', 'square', 'sawtooth', 'triangle']
 
-  setWaveForm() {
-    this.synthService.setOscillatorType(this.selectedWaveForm)
+  constructor() {
   }
 }

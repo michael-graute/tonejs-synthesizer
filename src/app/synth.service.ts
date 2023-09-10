@@ -16,10 +16,10 @@ export interface Step {
 export class SynthService {
 
   sequenzerStepPlaying: Subject<number> = new Subject<number>();
-  sequenceStopped: Subject<void> = new Subject<void>();
-
-  private synth = new Tone.Synth();
-  private synth2 = new Tone.Synth();
+  sequenzerStopped: Subject<void> = new Subject<void>();
+  sequenzerStarted: Subject<void> = new Subject<void>();
+  noteOn: Subject<string> = new Subject<string>();
+  noteOff: Subject<string> = new Subject<string>();
 
   private reverb = new Tone.Reverb(5).toDestination();
 
@@ -29,15 +29,21 @@ export class SynthService {
 
   private loop?: Tone.Loop;
 
+  private synths: Tone.Synth[] = [];
+
   public sequencerEnabled: boolean = false;
 
   public sequenzerPlaying: boolean = false;
 
   public sequencerInterval: string = '8n';
 
+  public sequencerRootNote: string = 'C4';
+
   public currentNote: string = 'C4';
 
   public sequencerActiveStepsCount: number = 8;
+
+  public currentSequencerStep: number = 0;
 
   public sequencerSteps: Step[] = [
     {velocity: 1, pitch: 0, duration: '8n', armed: true},
@@ -59,8 +65,6 @@ export class SynthService {
   ]
 
   constructor() {
-    this.synth.connect(this.reverb);
-    this.synth2.connect(this.delay);
   }
 
 
@@ -73,47 +77,34 @@ export class SynthService {
   }
 
   play(){
-    this.synth.triggerAttack(this.currentNote);
-    this.synth2.oscillator.type = 'square';
-    this.synth2.triggerAttack(this.currentNote);
+    this.noteOn.next(this.currentNote);
+    this.synths.forEach((synth: Tone.Synth) => {
+      synth.triggerAttack(this.currentNote);
+    });
   }
 
   stop(){
-    this.synth.triggerRelease();
-    this.synth2.triggerRelease();
-  }
-
-  setOscillatorType(type:string){
-    this.synth.oscillator.type = type as any;
-  }
-
-  setAttack(attack:number){
-    this.synth.envelope.attack = attack;
-  }
-
-  setDecay(decay:number){
-    this.synth.envelope.decay = decay;
-  }
-
-  setSustain(sustain:number){
-    this.synth.envelope.sustain = sustain;
-  }
-
-  setRelease(release:number){
-    this.synth.envelope.release = release;
+    this.noteOff.next(this.currentNote);
+    this.synths.forEach((synth: Tone.Synth) => {
+      synth.triggerRelease();
+    });
   }
 
   playSequence() {
     this.sequenzerPlaying = true;
+    this.sequenzerStarted.next();
     let index = 0;
     this.loop = new Tone.Loop(time => {
       const step = this.sequencerSteps[index];
       if(step.armed) {
-        const tone = Tone.Frequency(this.currentNote).transpose(step.pitch);
-        this.synth.triggerAttackRelease(tone.toFrequency(), step.duration, time, step.velocity);
-        this.synth2.triggerAttackRelease(tone.toFrequency(), step.duration, time, step.velocity);
+        const tone = Tone.Frequency(this.sequencerRootNote).transpose(step.pitch);
+        this.synths.forEach((synth: Tone.Synth) => {
+          synth.triggerAttackRelease(tone.toFrequency(), step.duration, time, step.velocity);
+          this.noteOn.next(tone.toNote());
+        });
       }
       Tone.Draw.schedule(() => {
+        this.currentSequencerStep = index;
         this.sequenzerStepPlaying.next(index);
         index = (index + 1) % this.sequencerActiveStepsCount;
       }, time);
@@ -123,10 +114,17 @@ export class SynthService {
   }
 
   stopSequence() {
+    this.noteOff.next(this.currentNote);
+    this.sequenzerStopped.next();
     this.sequenzerPlaying = false;
-    this.sequenceStopped.next();
     this.loop?.stop();
     Tone.Transport.stop();
     Tone.Transport.loopStart = 0;
+  }
+
+  addSynth(): Tone.Synth<Tone.SynthOptions> {
+    const synth: Tone.Synth<Tone.SynthOptions> = new Tone.Synth().toDestination();
+    this.synths.push(synth);
+    return synth;
   }
 }
