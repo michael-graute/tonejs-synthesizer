@@ -9,6 +9,8 @@ import {FormsModule} from "@angular/forms";
 import { EnvelopeComponent } from './envelope/envelope.component';
 import { SequenzerComponent } from './sequenzer/sequenzer.component';
 import { MidiMonitorComponent } from './midi-monitor/midi-monitor.component';
+import { KnobDirective } from './knob.directive';
+import { KnobInputComponent } from './knob-input/knob-input.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +19,9 @@ import { MidiMonitorComponent } from './midi-monitor/midi-monitor.component';
     OscillatorComponent,
     EnvelopeComponent,
     SequenzerComponent,
-    MidiMonitorComponent
+    MidiMonitorComponent,
+    KnobDirective,
+    KnobInputComponent
   ],
   imports: [
     BrowserModule,
