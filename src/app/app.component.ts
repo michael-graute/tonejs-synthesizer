@@ -12,7 +12,7 @@ export class AppComponent {
   public oscillators: Tone.Synth<Tone.SynthOptions>[] = [];
 
   started = false;
-  constructor(@Inject(MIDI_SUPPORT) readonly supported: boolean, private synthService: SynthService) {
+  constructor(@Inject(MIDI_SUPPORT) readonly supported: boolean, public synthService: SynthService) {
     this.addOscillator();
     this.addOscillator();
     this.addOscillator();

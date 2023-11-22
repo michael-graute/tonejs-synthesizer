@@ -7,8 +7,6 @@ import {Step, SynthService} from "../synth.service";
   styleUrls: ['./sequenzer.component.scss']
 })
 export class SequenzerComponent implements OnInit {
-
-  stepCount: number = 0;
   rootNotes: string[] = [];
 
   constructor(public synthService: SynthService, private changeDetectorRef: ChangeDetectorRef) {

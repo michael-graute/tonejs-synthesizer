@@ -21,15 +21,35 @@ export class SynthService {
   noteOn: Subject<string> = new Subject<string>();
   noteOff: Subject<string> = new Subject<string>();
 
-  private reverb = new Tone.Reverb(5).toDestination();
+  public reverb = new Tone.Reverb(1);
 
-  private delay = new Tone.FeedbackDelay("8n", 0.5).toDestination();
+  public delay = new Tone.FeedbackDelay(0, 0).toDestination();
+
+  public phaser = new Tone.Phaser({
+    frequency: 15,
+    octaves: 5,
+    baseFrequency: 1000
+  });
+
+  public chorus = new Tone.Chorus({
+    frequency: 0,
+    delayTime: 0,
+    depth: 0,
+    type: 'sine',
+    spread: 180
+  });
 
   private _tempo: number = 120;
 
   private loop?: Tone.Loop;
 
   private synths: Tone.Synth[] = [];
+
+  private _merge: Tone.Merge = new Tone.Merge(3).connect(this.delay).connect(this.reverb);
+
+  private _gain: Tone.Gain = new Tone.Gain(0.5);
+
+  private _channel: Tone.Channel = new Tone.Channel();
 
   public sequencerEnabled: boolean = false;
 
@@ -65,6 +85,12 @@ export class SynthService {
   ]
 
   constructor() {
+    //this.reverb.connect(this._channel);
+    this._channel.connect(this._gain);
+    this._gain.connect(this.phaser);
+    this.phaser.connect(this.chorus);
+    this.chorus.connect(this.reverb);
+    this.reverb.connect(this.delay);
   }
 
 
@@ -123,7 +149,9 @@ export class SynthService {
   }
 
   addSynth(): Tone.Synth<Tone.SynthOptions> {
-    const synth: Tone.Synth<Tone.SynthOptions> = new Tone.Synth().toDestination();
+    const synth: Tone.Synth<Tone.SynthOptions> = new Tone.Synth();
+    synth.connect(this._channel);
+    //synth.chain(this.delay, this.reverb, Tone.Destination);
     this.synths.push(synth);
     return synth;
   }

@@ -8,6 +8,12 @@
     <div class="row mb-3">
       <ins-oscillator class="col" *ngFor="let synth of oscillators; let i = index" [name]="'Oscillator ' + (i + 1)" [synth]="synth"></ins-oscillator>
     </div>
+    <div class="row mb-3">
+      <ins-reverb class="col" [reverb]="synthService.reverb"></ins-reverb>
+      <ins-delay class="col" [delay]="synthService.delay"></ins-delay>
+      <ins-phaser class="col" [phaser]="synthService.phaser"></ins-phaser>
+      <ins-chorus class="col" [chorus]="synthService.chorus"></ins-chorus>
+    </div>
     <ins-sequenzer></ins-sequenzer>
     <ins-keyboard></ins-keyboard>
   </div>

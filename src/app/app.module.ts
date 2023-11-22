@@ -11,6 +11,10 @@ import { SequenzerComponent } from './sequenzer/sequenzer.component';
 import { MidiMonitorComponent } from './midi-monitor/midi-monitor.component';
 import { KnobDirective } from './knob.directive';
 import { KnobInputComponent } from './knob-input/knob-input.component';
+import { ReverbComponent } from './reverb/reverb.component';
+import { DelayComponent } from './delay/delay.component';
+import { ChorusComponent } from './chorus/chorus.component';
+import { PhaserComponent } from './phaser/phaser.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +25,11 @@ import { KnobInputComponent } from './knob-input/knob-input.component';
     SequenzerComponent,
     MidiMonitorComponent,
     KnobDirective,
-    KnobInputComponent
+    KnobInputComponent,
+    ReverbComponent,
+    DelayComponent,
+    ChorusComponent,
+    PhaserComponent
   ],
   imports: [
     BrowserModule,

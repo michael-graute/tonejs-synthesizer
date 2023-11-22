@@ -22,7 +22,7 @@ export class MidiMonitorComponent implements OnInit{
 
   ngOnInit(): void {
     this.notes$.subscribe((note: [number, number, number]): void => {
-      console.log(note);
+      //console.log(note);
       if(note[0] === 144 && note[2] > 0) { // note on
         console.log('Note On', Tone.Frequency(note[1], "midi").toNote());
         console.log('Velocity', (1/127) * note[2]);
