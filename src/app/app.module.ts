@@ -15,6 +15,8 @@ import { ReverbComponent } from './reverb/reverb.component';
 import { DelayComponent } from './delay/delay.component';
 import { ChorusComponent } from './chorus/chorus.component';
 import { PhaserComponent } from './phaser/phaser.component';
+import { LfoComponent } from './lfo/lfo.component';
+import { FrequencyEnvelopeComponent } from './frequency-envelope/frequency-envelope.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,9 @@ import { PhaserComponent } from './phaser/phaser.component';
     ReverbComponent,
     DelayComponent,
     ChorusComponent,
-    PhaserComponent
+    PhaserComponent,
+    LfoComponent,
+    FrequencyEnvelopeComponent
   ],
   imports: [
     BrowserModule,

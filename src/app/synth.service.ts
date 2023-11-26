@@ -21,14 +21,23 @@ export class SynthService {
   noteOn: Subject<string> = new Subject<string>();
   noteOff: Subject<string> = new Subject<string>();
 
-  public reverb = new Tone.Reverb(1);
+  public reverb = new Tone.Reverb({
+    decay: 0.1,
+    preDelay: 0.01,
+    wet: 0
+  }).toDestination();
 
-  public delay = new Tone.FeedbackDelay(0, 0).toDestination();
+  public delay = new Tone.FeedbackDelay({
+    delayTime: 0,
+    feedback: 0,
+    wet: 0
+  });
 
   public phaser = new Tone.Phaser({
     frequency: 15,
     octaves: 5,
-    baseFrequency: 1000
+    baseFrequency: 1000,
+    wet: 0
   });
 
   public chorus = new Tone.Chorus({
@@ -36,7 +45,8 @@ export class SynthService {
     delayTime: 0,
     depth: 0,
     type: 'sine',
-    spread: 180
+    spread: 180,
+    wet: 0
   });
 
   private _tempo: number = 120;
@@ -45,7 +55,7 @@ export class SynthService {
 
   private synths: Tone.Synth[] = [];
 
-  private _merge: Tone.Merge = new Tone.Merge(3).connect(this.delay).connect(this.reverb);
+  public lfo: Tone.LFO = new Tone.LFO(5, 0, 1);
 
   private _gain: Tone.Gain = new Tone.Gain(0.5);
 
@@ -86,11 +96,12 @@ export class SynthService {
 
   constructor() {
     //this.reverb.connect(this._channel);
+    this.lfo.connect(this._gain.gain);
     this._channel.connect(this._gain);
     this._gain.connect(this.phaser);
     this.phaser.connect(this.chorus);
-    this.chorus.connect(this.reverb);
-    this.reverb.connect(this.delay);
+    this.chorus.connect(this.delay);
+    this.delay.connect(this.reverb);
   }
 
 
@@ -104,6 +115,7 @@ export class SynthService {
 
   play(){
     this.noteOn.next(this.currentNote);
+    this.lfo.start();
     this.synths.forEach((synth: Tone.Synth) => {
       synth.triggerAttack(this.currentNote);
     });
@@ -111,6 +123,7 @@ export class SynthService {
 
   stop(){
     this.noteOff.next(this.currentNote);
+    this.lfo.stop();
     this.synths.forEach((synth: Tone.Synth) => {
       synth.triggerRelease();
     });
@@ -137,6 +150,7 @@ export class SynthService {
     }, this.sequencerInterval).start(0);
     Tone.Transport.bpm.value = this.tempo;
     Tone.Transport.start();
+    this.lfo.start();
   }
 
   stopSequence() {
@@ -146,12 +160,12 @@ export class SynthService {
     this.loop?.stop();
     Tone.Transport.stop();
     Tone.Transport.loopStart = 0;
+    this.lfo.stop();
   }
 
   addSynth(): Tone.Synth<Tone.SynthOptions> {
     const synth: Tone.Synth<Tone.SynthOptions> = new Tone.Synth();
     synth.connect(this._channel);
-    //synth.chain(this.delay, this.reverb, Tone.Destination);
     this.synths.push(synth);
     return synth;
   }
