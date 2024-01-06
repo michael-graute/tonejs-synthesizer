@@ -57,7 +57,7 @@
         </div>
       </div>
       <div class="sequenzer">
-        <div class="step" *ngFor="let step of synthService.sequencerSteps; let i = index" [ngClass]="{'playing': (stepPlaying === i) && synthService.sequenzerPlaying, disabled: i+1 > synthService.sequencerActiveStepsCount}">
+        <div class="step" *ngFor="let step of synthService.sequencerSteps; let i = index" [ngClass]="{'playing': (stepPlaying === i) && synthService.sequenzerPlaying, 'disabled': i+1 > synthService.sequencerActiveStepsCount}">
           <div class="light"></div>
           <div class="step-toggle" [ngClass]="{'armed': step.armed}" (click)="toggleArmed(i)">&nbsp;</div>
           <div>

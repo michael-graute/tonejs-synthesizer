@@ -27,7 +27,7 @@ export class SequenzerComponent implements OnInit {
       this.changeDetectorRef.detectChanges();
     });
 
-    this,this.synthService.sequenzerStarted.subscribe(() => {
+    this.synthService.sequenzerStarted.subscribe(() => {
       this.isPlaying = true;
       this.stepPlaying = 0;
     });

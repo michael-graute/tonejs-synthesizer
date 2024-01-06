@@ -25,7 +25,7 @@ export class SynthService {
     decay: 0.1,
     preDelay: 0.01,
     wet: 0
-  }).toDestination();
+  });
 
   public delay = new Tone.FeedbackDelay({
     delayTime: 0,
@@ -51,13 +51,15 @@ export class SynthService {
 
   private _tempo: number = 120;
 
+  public gainValue: number = .8;
+
   private loop?: Tone.Loop;
 
   private synths: Tone.Synth[] = [];
 
   public lfo: Tone.LFO = new Tone.LFO(5, 0, 1);
 
-  private _gain: Tone.Gain = new Tone.Gain(0.5);
+  private _gain: Tone.Gain = new Tone.Gain(this.gainValue).toDestination();
 
   private _channel: Tone.Channel = new Tone.Channel();
 
@@ -96,12 +98,17 @@ export class SynthService {
 
   constructor() {
     //this.reverb.connect(this._channel);
-    this.lfo.connect(this._gain.gain);
+    //this._channel.connect(this._gain);
+    //this._gain.connect(this.phaser);
+    //this.phaser.connect(this.chorus);
+    //this.chorus.connect(this.delay);
+    //this.delay.connect(this._gain);
+    //this._channel.connect(this.delay);
     this._channel.connect(this._gain);
-    this._gain.connect(this.phaser);
-    this.phaser.connect(this.chorus);
-    this.chorus.connect(this.delay);
-    this.delay.connect(this.reverb);
+    Tone.Destination.chain(this.reverb, this.delay);
+    //Tone.Destination.volume.rampTo(this.gainValue, .1);
+    //this.reverb.connect(this._channel);
+    this.lfo.connect(this._gain.gain);
   }
 
 
@@ -168,5 +175,9 @@ export class SynthService {
     synth.connect(this._channel);
     this.synths.push(synth);
     return synth;
+  }
+
+  setVolume() {
+    this._gain.gain.rampTo(this.gainValue, .1);
   }
 }

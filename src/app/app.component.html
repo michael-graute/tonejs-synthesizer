@@ -17,6 +17,11 @@
     <div class="row mb-3">
       <ins-lfo class="col" [lfo]="synthService.lfo"></ins-lfo>
     </div>
+    <div class="row mb-3">
+      <div class="col">
+        <input class="form-range" type="range" min="0" max="1" step=".1" [(ngModel)]="synthService.gainValue" (ngModelChange)="synthService.setVolume()">
+      </div>
+    </div>
     <ins-sequenzer></ins-sequenzer>
     <ins-keyboard></ins-keyboard>
   </div>
